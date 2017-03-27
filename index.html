@@ -11,8 +11,18 @@
         </script>
         <script type="text/javascript">
                 var appData = {};
-		        appData.token = 'b046fc19-dd29-4a8c-b381-88bac5e799a7';
-                var femtoPayControl = new FemtoPay('http://femtopay-prototype.noveogroup.com/');
+		appData.token = 'b046fc19-dd29-4a8c-b381-88bac5e799a7';
+            	var payCallback = function (paymentResponse) {
+                	if(paymentResponse.status == 'PROCESSED') {
+                    		$("button[data-button-id='" + paymentResponse.paymentButtonId + "']").attr("disabled", true)
+                        	.html("<span style='padding-right: 20px;' class='glyphicon glyphicon-thumbs-up'></span>Bought");
+                	} else {
+                    		$("button[data-button-id='" + paymentResponse.paymentButtonId + "']")
+                        	.html("<span style='padding-right: 20px;' class='glyphicon glyphicon-thumbs-down'></span>Oops..");
+                    		alert("Error:" + paymentResponse.message);
+                	}
+                };
+		var femtoPayControl = new FemtoPay('http://femtopay-prototype.noveogroup.com/', payCallback);
                 $(document).ready(function () {
                     femtoPayControl.initButtons(appData.token);
                 })
